@@ -1,11 +1,18 @@
 <template lang="pug">
-  #home
+v-container.fill-height.pa-0
+  Map
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import Component from "vue-class-component";
+import Vue from "vue";
 
-@Component
+import Map from "@/components/Map.vue";
+
+@Component({
+  components: {
+    Map,
+  },
+})
 export default class Home extends Vue {}
 </script>
