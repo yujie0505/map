@@ -1,0 +1,4 @@
+export const DEFAULT_CENTER_LATITUDE = 25.0374865;
+export const DEFAULT_CENTER_LONGITUDE = 121.5647688;
+export const DEFAULT_MAP_TYPE = "terrain";
+export const DEFAULT_ZOOM_LEVEL = 16;

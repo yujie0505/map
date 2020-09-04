@@ -1,5 +1,5 @@
 <template lang="pug">
-v-container.fill-height.pa-0
+v-container.fill-height.pa-0(fluid)
   Map
 </template>
 
