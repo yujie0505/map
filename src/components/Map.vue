@@ -16,6 +16,8 @@ export default class Map extends Vue {
   private map_type = MAP.DEFAULT_MAP_TYPE;
   private zoom_level = MAP.DEFAULT_ZOOM_LEVEL;
 
+  private map: null | google.maps.Map = null;
+
   private mounted() {
     window[CALLBACK_ON_GOOGLE_MAP_API_LOADED] = this[CALLBACK_ON_GOOGLE_MAP_API_LOADED];
 
@@ -26,7 +28,7 @@ export default class Map extends Vue {
   }
 
   private [CALLBACK_ON_GOOGLE_MAP_API_LOADED]() {
-    new window.google.maps.Map(document.getElementById("map"), {
+    this.map = new window.google.maps.Map(document.getElementById("map"), {
       center: { lat: this.center_latitude, lng: this.center_longitude },
       mapTypeId: this.map_type,
       zoom: this.zoom_level,
