@@ -4,8 +4,8 @@ v-container.fill-height.pa-0(fluid)
 </template>
 
 <script lang="ts">
-import Component from "vue-class-component";
 import Vue from "vue";
+import Component from "vue-class-component";
 
 import Map from "@/components/Map.vue";
 
