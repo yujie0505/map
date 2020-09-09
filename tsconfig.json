@@ -18,6 +18,7 @@
       "./node_modules/vuetify/types/"
     ],
     "types": [
+      "googlemaps",
       "vuetify",
       "webpack-env"
     ],
