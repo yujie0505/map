@@ -1,0 +1,109 @@
+#!/usr/local/bin/node
+
+"use strict";
+
+const { readFileSync, writeFileSync } = require("fs");
+const { getDistance } = require("geolib");
+const { resolve } = require("path");
+
+const argv = require("yargs")
+  .command(
+    "* <input-csv>",
+    "Generate GeoJSON from the specified csv file",
+    (yargs) => {
+      yargs.positional("input-csv", {
+        alias: "input_csv",
+        coerce: (it) => resolve(process.cwd(), it),
+        describe: "the csv file containing coordinates and values",
+        type: "string",
+      });
+    },
+    () => {},
+  )
+  .option("grid.size", { default: 100, describe: "the height and width of each grid", group: "Grid:", type: "number" })
+  .option("origin.latitude", {
+    default: 23.973875,
+    describe: "the latitude of the origin of grids",
+    group: "Origin:",
+    type: "number",
+  })
+  .option("origin.longitude", {
+    default: 120.982024,
+    describe: "the longitude of the origin of grids",
+    group: "Origin:",
+    type: "number",
+  })
+  .option("o", { alias: "output", default: "GeoJSON.json", describe: "the outputted GeoJSON file", type: "string" })
+  .help()
+  .locale("en")
+  .wrap(110).argv;
+
+const app = {
+  distance: {
+    latitude: getDistance(
+      { lat: argv.origin.latitude, lng: argv.origin.longitude },
+      { lat: argv.origin.latitude + 1, lng: argv.origin.longitude },
+    ),
+    longitude: getDistance(
+      { lat: argv.origin.latitude, lng: argv.origin.longitude },
+      { lat: argv.origin.latitude, lng: argv.origin.longitude + 1 },
+    ),
+  },
+};
+
+/* main script */
+const csv = readFileSync(argv.input_csv, "utf-8").split("\n").slice(1);
+
+// generate grids based on the data in csv
+const grids = new Map();
+
+for (const row of csv) {
+  if (!row) {
+    continue;
+  }
+
+  const [longitude, latitude, value] = row.split(",").map(Number);
+
+  const grid_index_latitude = Math.floor(((latitude - argv.origin.latitude) * app.distance.latitude) / argv.grid.size);
+  const grid_index_longitude = Math.floor(
+    ((longitude - argv.origin.longitude) * app.distance.longitude) / argv.grid.size,
+  );
+
+  const grid_index = `${grid_index_latitude},${grid_index_longitude}`;
+
+  if (!grids.has(grid_index)) {
+    grids.set(grid_index, {
+      items: [],
+      latitude_higher: argv.origin.latitude + ((grid_index_latitude + 1) * argv.grid.size) / app.distance.latitude,
+      latitude_lower: argv.origin.latitude + (grid_index_latitude * argv.grid.size) / app.distance.latitude,
+      longitude_higher: argv.origin.longitude + ((grid_index_longitude + 1) * argv.grid.size) / app.distance.longitude,
+      longitude_lower: argv.origin.longitude + (grid_index_longitude * argv.grid.size) / app.distance.longitude,
+    });
+  }
+
+  grids.get(grid_index).items.push({ latitude, longitude, value });
+}
+
+// generate GeoJSON for the grids
+const geojson = { type: "FeatureCollection", features: [] };
+
+grids.forEach((grid) => {
+  geojson.features.push({
+    type: "Feature",
+    properties: {},
+    geometry: {
+      type: "Polygon",
+      coordinates: [
+        [
+          [grid.longitude_lower, grid.latitude_higher],
+          [grid.longitude_higher, grid.latitude_higher],
+          [grid.longitude_higher, grid.latitude_lower],
+          [grid.longitude_lower, grid.latitude_lower],
+          [grid.longitude_lower, grid.latitude_higher],
+        ],
+      ],
+    },
+  });
+});
+
+writeFileSync(argv.output, JSON.stringify(geojson, null, 2));
