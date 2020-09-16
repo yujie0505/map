@@ -51,7 +51,7 @@ const app = {
   },
 };
 
-/* main script goes here */
+/**** main script goes here ****/
 const csv = readFileSync(argv.input_csv, "utf-8").split("\n").slice(1);
 
 // generate grids based on the data in csv
@@ -113,5 +113,22 @@ grids.forEach((grid, grid_index) => {
     },
   });
 });
+
+// color each grid
+let maximum_value = -Infinity;
+let minimum_value = Infinity;
+
+for (const feature of geojson.features) {
+  maximum_value = Math.max(maximum_value, feature.properties.metadata.value);
+  minimum_value = Math.min(minimum_value, feature.properties.metadata.value);
+}
+
+geojson.features.forEach(
+  (it) =>
+    (it.properties.fill =
+      0 < it.properties.metadata.value
+        ? `hsl(0, 100%, ${100 - 50 * (it.properties.metadata.value / maximum_value)}%)`
+        : `hsl(240, 100%, ${100 - 50 * (it.properties.metadata.value / minimum_value)}%)`),
+);
 
 writeFileSync(argv.output, JSON.stringify(geojson, null, 2));
