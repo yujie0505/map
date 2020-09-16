@@ -51,7 +51,7 @@ const app = {
   },
 };
 
-/* main script */
+/* main script goes here */
 const csv = readFileSync(argv.input_csv, "utf-8").split("\n").slice(1);
 
 // generate grids based on the data in csv
@@ -87,9 +87,10 @@ for (const row of csv) {
 // generate GeoJSON for the grids
 const geojson = { type: "FeatureCollection", features: [] };
 
-grids.forEach((grid) => {
+grids.forEach((grid, grid_index) => {
   geojson.features.push({
     type: "Feature",
+    id: grid_index,
     properties: {
       metadata: {
         items: grid.items,
