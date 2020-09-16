@@ -90,7 +90,14 @@ const geojson = { type: "FeatureCollection", features: [] };
 grids.forEach((grid) => {
   geojson.features.push({
     type: "Feature",
-    properties: {},
+    properties: {
+      metadata: {
+        items: grid.items,
+        latitude_span: [grid.latitude_lower, grid.latitude_higher],
+        longitude_span: [grid.longitude_lower, grid.longitude_higher],
+        value: grid.items.map((it) => it.value).reduce((a, b) => a + b) / grid.items.length,
+      },
+    },
     geometry: {
       type: "Polygon",
       coordinates: [
