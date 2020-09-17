@@ -21,6 +21,18 @@ const argv = require("yargs")
     () => {},
   )
   .option("grid.size", { default: 100, describe: "the height and width of each grid", group: "Grid:", type: "number" })
+  .option("grid.hue.negative", {
+    default: 240,
+    describe: "the hue angle for each grid with negative value",
+    group: "Grid:",
+    type: "number",
+  })
+  .option("grid.hue.positive", {
+    default: 0,
+    describe: "the hue angle for each grid with positive value",
+    group: "Grid:",
+    type: "number",
+  })
   .option("origin.latitude", {
     default: 23.973875,
     describe: "the latitude of the origin of grids",
@@ -34,6 +46,18 @@ const argv = require("yargs")
     type: "number",
   })
   .option("o", { alias: "output", default: "GeoJSON.json", describe: "the outputted GeoJSON file", type: "string" })
+  .option("value.ignore.negative", {
+    default: false,
+    describe: "ignore the rows with negative value in csv",
+    group: "Value:",
+    type: "boolean",
+  })
+  .option("value.ignore.positive", {
+    default: false,
+    describe: "ignore the rows with positive value in csv",
+    group: "Value:",
+    type: "boolean",
+  })
   .help()
   .locale("en")
   .wrap(110).argv;
@@ -58,11 +82,12 @@ const csv = readFileSync(argv.input_csv, "utf-8").split("\n").slice(1);
 const grids = new Map();
 
 for (const row of csv) {
-  if (!row) {
-    continue;
-  }
+  if (!row) continue;
 
   const [longitude, latitude, value] = row.split(",").map(Number);
+
+  if (argv.value.ignore.negative && 0 > value) continue;
+  if (argv.value.ignore.positive && 0 < value) continue;
 
   const grid_index_latitude = Math.floor(((latitude - argv.origin.latitude) * app.distance.latitude) / argv.grid.size);
   const grid_index_longitude = Math.floor(
@@ -127,8 +152,8 @@ geojson.features.forEach(
   (it) =>
     (it.properties.fill =
       0 < it.properties.metadata.value
-        ? `hsl(0, 100%, ${100 - 50 * (it.properties.metadata.value / maximum_value)}%)`
-        : `hsl(240, 100%, ${100 - 50 * (it.properties.metadata.value / minimum_value)}%)`),
+        ? `hsl(${argv.grid.hue.positive}, 100%, ${100 - 50 * (it.properties.metadata.value / maximum_value)}%)`
+        : `hsl(${argv.grid.hue.negative}, 100%, ${100 - 50 * (it.properties.metadata.value / minimum_value)}%)`),
 );
 
 writeFileSync(argv.output, JSON.stringify(geojson, null, 2));
