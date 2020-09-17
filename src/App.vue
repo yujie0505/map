@@ -1,7 +1,6 @@
 <template lang="pug">
 v-app#app
-  v-navigation-drawer(app, dark, expand-on-hover, permanent)
-    NavDrawer
+  WidgetDrawer
   v-main
     router-view
 </template>
@@ -10,11 +9,11 @@ v-app#app
 import Vue from "vue";
 import Component from "vue-class-component";
 
-import NavDrawer from "@/components/NavDrawer.vue";
+import WidgetDrawer from "@/components/WidgetDrawer.vue";
 
 @Component({
   components: {
-    NavDrawer,
+    WidgetDrawer,
   },
 })
 export default class App extends Vue {}

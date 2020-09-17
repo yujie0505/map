@@ -1,5 +1,5 @@
 <template lang="pug">
-v-list
+v-navigation-drawer(absolute, dark)
 </template>
 
 <script lang="ts">
@@ -7,5 +7,5 @@ import Vue from "vue";
 import Component from "vue-class-component";
 
 @Component
-export default class NavDrawer extends Vue {}
+export default class WidgetDrawer extends Vue {}
 </script>
