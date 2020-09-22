@@ -12,7 +12,7 @@ v-container.fill-height.pa-0(fluid)
             v-subheader General
             v-list-item
               v-list-item-content
-                v-list-item-title.text--lighten-2(v-text="gridValue", :class="color(selectedGrid.value)")
+                v-list-item-title.text--accent-1(v-text="gridValue", :class="color(selectedGrid.value)")
                 v-list-item-subtitle the average value of items in this grid
             v-list-item
               v-list-item-content
