@@ -2,7 +2,7 @@
 v-container.fill-height.pa-0(fluid)
   WidgetDrawer(dark)
     template(#tabs)
-      v-tab(v-for="tab in tabs", :href="`#${tab.key}`", :key="tab.key")
+      v-tab(v-for="tab in tabs", :disabled="tab.disabled", :href="`#${tab.key}`", :key="tab.key")
         v-icon(v-text="tab.icon")
     template(#tab-items)
       v-tab-item(value="source")
@@ -33,9 +33,11 @@ export default class Home extends Vue {
   @MapModule.State("selectedGrid") readonly selectedGrid!: Grid | null;
   @MapModule.Mutation(MUTATION_MAP_SET_SELECTED_GRID) [MUTATION_MAP_SET_SELECTED_GRID]!: (payload: Grid | null) => void;
 
-  private readonly tabs: Array<WidgetTab> = [
-    { icon: "mdi-text-box-multiple", key: "source" },
-    { icon: "mdi-map-search", key: "metadata" },
-  ];
+  private get tabs(): Array<WidgetTab> {
+    return [
+      { icon: "mdi-text-box-multiple", key: "source" },
+      { disabled: !this.selectedGrid, icon: "mdi-map-search", key: "metadata" },
+    ];
+  }
 }
 </script>
