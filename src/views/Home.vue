@@ -12,7 +12,7 @@ v-container.fill-height.pa-0(fluid)
             v-subheader General
             v-list-item
               v-list-item-content
-                v-list-item-title(v-text="gridValue")
+                v-list-item-title.text--lighten-1(v-text="gridValue", :class="color(selectedGrid.value)")
                 v-list-item-subtitle the average value of items in this grid
             v-list-item
               v-list-item-content
@@ -70,6 +70,10 @@ export default class Home extends Vue {
       { icon: "mdi-text-box-multiple", key: "source" },
       { disabled: !this.selectedGrid, icon: "mdi-map-search", key: "metadata" },
     ];
+  }
+
+  private color(value: number): string {
+    return `${0 < value ? "red" : "blue"}--text`;
   }
 }
 </script>
