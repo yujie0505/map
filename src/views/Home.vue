@@ -2,9 +2,11 @@
 v-container.fill-height.pa-0(fluid)
   WidgetDrawer(dark)
     template(#tabs)
-      v-tab(v-for="tab in tabs", :key="tab.key")
+      v-tab(v-for="tab in tabs", :href="`#${tab.key}`", :key="tab.key")
         v-icon(v-text="tab.icon")
     template(#tab-items)
+      v-tab-item(value="source")
+      v-tab-item(value="metadata")
   Map(@selectGrid="MUTATION_MAP_SET_SELECTED_GRID")
 </template>
 
