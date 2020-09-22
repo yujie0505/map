@@ -1,6 +1,6 @@
 <template lang="pug">
 v-container.fill-height.pa-0(fluid)
-  WidgetDrawer(dark)
+  WidgetDrawer(dark, width="408")
     template(#tabs)
       v-tab(v-for="tab in tabs", :disabled="tab.disabled", :href="`#${tab.key}`", :key="tab.key")
         v-icon(v-text="tab.icon")

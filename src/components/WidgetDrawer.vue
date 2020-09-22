@@ -17,6 +17,7 @@ import { WidgetOpts } from "@/types/widget";
 export default class WidgetDrawer extends Vue {
   @Prop({ default: true, type: Boolean }) readonly absolute!: boolean;
   @Prop({ default: false, type: Boolean }) readonly dark!: boolean;
+  @Prop({ default: "256", type: String }) readonly width!: string;
 
   private tabs: number | string | null = null;
 
@@ -24,6 +25,7 @@ export default class WidgetDrawer extends Vue {
     return {
       absolute: this.absolute,
       dark: this.dark,
+      width: this.width,
     };
   }
 }
