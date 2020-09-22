@@ -7,6 +7,21 @@ v-container.fill-height.pa-0(fluid)
     template(#tab-items)
       v-tab-item(value="source")
       v-tab-item(value="metadata")
+        template(v-if="selectedGrid")
+          v-list(subheader, two-line)
+            v-subheader General
+            v-list-item
+              v-list-item-content
+                v-list-item-title(v-text="gridValue")
+                v-list-item-subtitle the average value of items in this grid
+            v-list-item
+              v-list-item-content
+                v-list-item-title(v-text="gridLatitudeSpan")
+                v-list-item-subtitle the span of latitude of this grid
+            v-list-item
+              v-list-item-content
+                v-list-item-title(v-text="gridLongitudeSpan")
+                v-list-item-subtitle the span of longitude of this grid
   Map(@selectGrid="MUTATION_MAP_SET_SELECTED_GRID")
 </template>
 
@@ -17,6 +32,7 @@ import { namespace } from "vuex-class";
 
 import Map from "@/components/Map.vue";
 import WidgetDrawer from "@/components/WidgetDrawer.vue";
+import { NUMBER_OF_DIGITS_TO_FIXED } from "@/constants/format";
 import { MUTATION_MAP_SET_SELECTED_GRID } from "@/constants/mutations";
 import { Grid } from "@/types/map";
 import { WidgetTab } from "@/types/widget";
@@ -32,6 +48,22 @@ const MapModule = namespace("map");
 export default class Home extends Vue {
   @MapModule.State("selectedGrid") readonly selectedGrid!: Grid | null;
   @MapModule.Mutation(MUTATION_MAP_SET_SELECTED_GRID) [MUTATION_MAP_SET_SELECTED_GRID]!: (payload: Grid | null) => void;
+
+  private get gridLatitudeSpan(): string {
+    return this.selectedGrid
+      ? this.selectedGrid.latitudeSpan.map((it) => `${it.toFixed(NUMBER_OF_DIGITS_TO_FIXED)}°N`).join(" ~ ")
+      : "";
+  }
+
+  private get gridLongitudeSpan(): string {
+    return this.selectedGrid
+      ? this.selectedGrid.longitudeSpan.map((it) => `${it.toFixed(NUMBER_OF_DIGITS_TO_FIXED)}°E`).join(" ~ ")
+      : "";
+  }
+
+  private get gridValue(): string {
+    return this.selectedGrid ? this.selectedGrid.value.toFixed(NUMBER_OF_DIGITS_TO_FIXED) : "";
+  }
 
   private get tabs(): Array<WidgetTab> {
     return [

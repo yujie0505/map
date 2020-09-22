@@ -2,7 +2,7 @@
 v-navigation-drawer(v-bind="options")
   v-tabs(v-model="tabs", grow)
     slot(name="tabs")
-  v-tabs-items(v-model="tabs")
+  v-tabs-items(v-model="tabs", :dark="dark")
     slot(name="tab-items")
 </template>
 
