@@ -1,5 +1,5 @@
 <template lang="pug">
-v-navigation-drawer(absolute, dark)
+v-navigation-drawer(v-bind="options")
   v-tabs(v-model="tabs", grow)
     slot(name="tabs")
   v-tabs-items(v-model="tabs")
@@ -11,12 +11,18 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
-import { Grid } from "@/types/map";
-
 @Component
 export default class WidgetDrawer extends Vue {
-  @Prop(Object) readonly selectedMetadata!: Grid | null;
+  @Prop({ default: true, type: Boolean }) readonly absolute!: boolean;
+  @Prop({ default: false, type: Boolean }) readonly dark!: boolean;
 
   private tabs: number | string | null = null;
+
+  private get options() {
+    return {
+      absolute: this.absolute,
+      dark: this.dark,
+    };
+  }
 }
 </script>
