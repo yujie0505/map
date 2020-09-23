@@ -3,7 +3,7 @@ v-container.fill-height.pa-0(fluid)
   WidgetDrawer(dark, width="408")
     template(#tabs)
       v-tab(v-for="tab in tabs", :disabled="tab.disabled", :href="`#${tab.key}`", :key="tab.key")
-        v-icon(v-text="tab.icon")
+        v-icon(v-text="tab.icon", large)
     template(#tab-items)
       v-tab-item(value="source")
       v-tab-item(value="metadata")
@@ -67,8 +67,8 @@ export default class Home extends Vue {
 
   private get tabs(): Array<WidgetTab> {
     return [
-      { icon: "mdi-text-box-multiple", key: "source" },
-      { disabled: !this.selectedGrid, icon: "mdi-map-search", key: "metadata" },
+      { icon: "twicon-postbox2", key: "source" },
+      { disabled: !this.selectedGrid, icon: "twicon-fortune", key: "metadata" },
     ];
   }
 
