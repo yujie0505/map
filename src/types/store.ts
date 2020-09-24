@@ -6,4 +6,5 @@ export interface RootState {
 
 export interface MapState {
   selectedGrid: Grid | null;
+  selectedWidgetTab: string | null;
 }
