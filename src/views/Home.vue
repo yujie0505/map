@@ -1,19 +1,25 @@
 <template lang="pug">
 v-container.fill-height.pa-0(fluid)
-  WidgetDrawer(dark, width="408")
+  WidgetDrawer(dark, width="408", :selectedWidgetTab="selectedWidgetTab")
     template(#tabs)
-      v-tab(v-for="tab in tabs", :disabled="tab.disabled", :href="`#${tab.key}`", :key="tab.key")
+      v-tab(
+        v-for="tab in tabs",
+        :disabled="tab.disabled",
+        :href="`#${tab.key}`",
+        :key="tab.key",
+        @click="MUTATION_MAP_SET_SELECTED_WIDGET_TAB(tab.key)"
+      )
         v-icon(v-text="tab.icon", large)
     template(#tab-items)
       v-tab-item(value="source")
       v-tab-item(value="metadata")
         template(v-if="selectedGrid")
+          v-subheader General
           v-list(subheader, two-line)
-            v-subheader General
             v-list-item
               v-list-item-content
                 v-list-item-title.text--accent-1(v-text="gridValue", :class="color(selectedGrid.value)")
-                v-list-item-subtitle the average value of items in this grid
+                v-list-item-subtitle the average value of targets in this grid
             v-list-item
               v-list-item-content
                 v-list-item-title(v-text="gridLatitudeSpan")
@@ -22,6 +28,8 @@ v-container.fill-height.pa-0(fluid)
               v-list-item-content
                 v-list-item-title(v-text="gridLongitudeSpan")
                 v-list-item-subtitle the span of longitude of this grid
+          v-divider
+          v-subheader Targets
   Map(@selectGrid="MUTATION_MAP_SET_SELECTED_GRID")
 </template>
 
@@ -33,7 +41,7 @@ import { namespace } from "vuex-class";
 import Map from "@/components/Map.vue";
 import WidgetDrawer from "@/components/WidgetDrawer.vue";
 import { NUMBER_OF_DIGITS_TO_FIXED } from "@/constants/format";
-import { MUTATION_MAP_SET_SELECTED_GRID } from "@/constants/mutations";
+import { MUTATION_MAP_SET_SELECTED_GRID, MUTATION_MAP_SET_SELECTED_WIDGET_TAB } from "@/constants/mutations";
 import { Grid } from "@/types/map";
 import { WidgetTab } from "@/types/widget";
 
@@ -47,7 +55,11 @@ const MapModule = namespace("map");
 })
 export default class Home extends Vue {
   @MapModule.State("selectedGrid") readonly selectedGrid!: Grid | null;
+  @MapModule.State("selectedWidgetTab") readonly selectedWidgetTab!: string | null;
   @MapModule.Mutation(MUTATION_MAP_SET_SELECTED_GRID) [MUTATION_MAP_SET_SELECTED_GRID]!: (payload: Grid | null) => void;
+  @MapModule.Mutation(MUTATION_MAP_SET_SELECTED_WIDGET_TAB) [MUTATION_MAP_SET_SELECTED_WIDGET_TAB]!: (
+    payload: string | null,
+  ) => void;
 
   private get gridLatitudeSpan(): string {
     return this.selectedGrid

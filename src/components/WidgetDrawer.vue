@@ -1,8 +1,8 @@
 <template lang="pug">
 v-navigation-drawer(v-bind="options")
-  v-tabs(v-model="tabs", grow)
+  v-tabs(:value="selectedWidgetTab", grow)
     slot(name="tabs")
-  v-tabs-items(v-model="tabs", :dark="dark")
+  v-tabs-items(:dark="dark", :value="selectedWidgetTab")
     slot(name="tab-items")
 </template>
 
@@ -19,7 +19,7 @@ export default class WidgetDrawer extends Vue {
   @Prop({ default: false, type: Boolean }) readonly dark!: boolean;
   @Prop({ default: "256", type: String }) readonly width!: string;
 
-  private tabs: number | string | null = null;
+  @Prop(String) readonly selectedWidgetTab!: string | null;
 
   private get options(): WidgetOpts {
     return {
