@@ -7,18 +7,22 @@ v-container.fill-height.pa-0(fluid)
         :disabled="tab.disabled",
         :href="`#${tab.key}`",
         :key="tab.key",
-        @click="MUTATION_MAP_SET_SELECTED_WIDGET_TAB(tab.key)"
+        @click="MUTATION_MAP_SET_SELECTED_WIDGET_TAB(tab.key)",
+        ref="tab"
       )
         v-icon(v-text="tab.icon", large)
     template(#tab-items)
       v-tab-item(value="source")
       v-tab-item(value="metadata")
-        template(v-if="selectedGrid")
+        v-card(ref="card")
           v-subheader General
           v-list(subheader, two-line)
-            v-list-item
+            v-list-item(ref="listItem")
               v-list-item-content
-                v-list-item-title.text--accent-1(v-text="gridValue", :class="color(selectedGrid.value)")
+                v-list-item-title.text--accent-1(
+                  v-text="gridValue",
+                  :class="selectedGrid ? color(selectedGrid.value) : ''"
+                )
                 v-list-item-subtitle the average value of targets in this grid
             v-list-item
               v-list-item-content
@@ -30,6 +34,7 @@ v-container.fill-height.pa-0(fluid)
                 v-list-item-subtitle the span of longitude of this grid
           v-divider
           v-subheader Targets
+        v-virtual-scroll(:height="scrollViewportHeight", :item-height="listItemHeight")
   Map(@selectGrid="MUTATION_MAP_SET_SELECTED_GRID")
 </template>
 
@@ -61,6 +66,11 @@ export default class Home extends Vue {
     payload: string | null,
   ) => void;
 
+  private cardHeight = 0;
+  private listItemHeight = 0;
+  private tabHeight = 0;
+  private windowHeight = window.innerHeight;
+
   private get gridLatitudeSpan(): string {
     return this.selectedGrid
       ? this.selectedGrid.latitudeSpan.map((it) => `${it.toFixed(NUMBER_OF_DIGITS_TO_FIXED)}°N`).join(" ~ ")
@@ -77,6 +87,10 @@ export default class Home extends Vue {
     return this.selectedGrid ? this.selectedGrid.value.toFixed(NUMBER_OF_DIGITS_TO_FIXED) : "";
   }
 
+  private get scrollViewportHeight(): number {
+    return this.windowHeight - this.tabHeight - this.cardHeight;
+  }
+
   private get tabs(): Array<WidgetTab> {
     return [
       { icon: "twicon-postbox2", key: "source" },
@@ -86,6 +100,16 @@ export default class Home extends Vue {
 
   private color(value: number): string {
     return `${0 < value ? "red" : "indigo"}--text`;
+  }
+
+  private created(): void {
+    this[MUTATION_MAP_SET_SELECTED_WIDGET_TAB]("metadata");
+  }
+
+  private mounted(): void {
+    this.cardHeight = (this.$refs.card as Vue).$el.clientHeight;
+    this.listItemHeight = (this.$refs.listItem as Vue).$el.clientHeight;
+    this.tabHeight = (this.$refs.tab as Array<Vue>)[0].$el.clientHeight;
   }
 }
 </script>
