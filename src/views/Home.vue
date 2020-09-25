@@ -103,6 +103,8 @@ export default class Home extends Vue {
   }
 
   private created(): void {
+    window.onresize = () => (this.windowHeight = window.innerHeight);
+
     this[MUTATION_MAP_SET_SELECTED_WIDGET_TAB]("metadata");
   }
 
