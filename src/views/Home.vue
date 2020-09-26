@@ -34,7 +34,7 @@ v-container.fill-height.pa-0(fluid)
                 v-list-item-subtitle the span of longitude of this grid
           v-divider
           v-subheader Targets
-        v-virtual-scroll(
+        v-virtual-scroll.mr-1.-scroll(
           :height="scrollViewportHeight",
           :item-height="listItemHeight",
           :items="selectedGrid ? selectedGrid.items : []"
@@ -128,3 +128,16 @@ export default class Home extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.-scroll {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: grey;
+    border-radius: 2px;
+  }
+}
+</style>
