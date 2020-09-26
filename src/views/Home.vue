@@ -13,6 +13,12 @@ v-container.fill-height.pa-0(fluid)
         v-icon(v-text="tab.icon", large)
     template(#tab-items)
       v-tab-item(value="source")
+        v-card.mr-1.-scroll(:height="tabItemHeight", flat)
+          v-subheader Upload GeoJSON
+          v-file-input.mx-3(dense, filled, hide-details, outlined, placeholder="File input")
+            template(#append-outer)
+              v-btn.ml-2
+                v-icon mdi-cloud-upload
       v-tab-item(value="metadata")
         v-card(flat, ref="card")
           v-subheader General
@@ -78,6 +84,7 @@ export default class Home extends Vue {
   private cardHeight = 0;
   private listItemHeight = 0;
   private tabHeight = 0;
+  private tabItemHeight = 0;
   private windowHeight = window.innerHeight;
 
   private get gridLatitudeSpan(): string {
@@ -125,12 +132,17 @@ export default class Home extends Vue {
     this.cardHeight = (this.$refs.card as Vue).$el.clientHeight;
     this.listItemHeight = (this.$refs.listItem as Vue).$el.clientHeight;
     this.tabHeight = (this.$refs.tab as Array<Vue>)[0].$el.clientHeight;
+    this.tabItemHeight = this.windowHeight - this.tabHeight;
+
+    this[MUTATION_MAP_SET_SELECTED_WIDGET_TAB]("source");
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .-scroll {
+  overflow-y: auto;
+
   &::-webkit-scrollbar {
     width: 6px;
   }
