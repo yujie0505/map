@@ -27,7 +27,7 @@ v-container.fill-height.pa-0(fluid)
             template(#append-outer)
               v-btn.ml-2(:disabled="!geojson", :loading="loading", @click.stop.prevent="upload")
                 v-icon mdi-cloud-upload
-      v-tab-item(value="metadata")
+      v-tab-item(:value="propertyNameMetadata")
         v-card(flat, ref="card")
           v-subheader General
           v-list(subheader, two-line)
@@ -70,6 +70,7 @@ import Map from "@/components/Map.vue";
 import WidgetDrawer from "@/components/WidgetDrawer.vue";
 import { ACTION_MAP_ADD_GEOJSON } from "@/constants/actions";
 import { NUMBER_OF_DIGITS_TO_FIXED } from "@/constants/format";
+import { DEFAULT_PROPERTY_NAME_METADATA } from "@/constants/map";
 import { MUTATION_MAP_SET_MAP_INSTANCE, MUTATION_MAP_SET_SELECTED_WIDGET_TAB } from "@/constants/mutations";
 import { Grid } from "@/types/map";
 import { WidgetTab } from "@/types/widget";
@@ -93,6 +94,8 @@ export default class Home extends Vue {
   @MapModule.Mutation(MUTATION_MAP_SET_SELECTED_WIDGET_TAB) [MUTATION_MAP_SET_SELECTED_WIDGET_TAB]!: (
     payload: string | null,
   ) => void;
+
+  private propertyNameMetadata = DEFAULT_PROPERTY_NAME_METADATA;
 
   private cardHeight = 0;
   private listItemHeight = 0;
@@ -126,7 +129,7 @@ export default class Home extends Vue {
   private get tabs(): Array<WidgetTab> {
     return [
       { icon: "twicon-postbox2", key: "source" },
-      { disabled: !this.selectedGrid, icon: "twicon-fortune", key: "metadata" },
+      { disabled: !this.selectedGrid, icon: "twicon-fortune", key: this.propertyNameMetadata },
     ];
   }
 
@@ -159,7 +162,7 @@ export default class Home extends Vue {
   private created(): void {
     window.onresize = () => (this.windowHeight = window.innerHeight);
 
-    this[MUTATION_MAP_SET_SELECTED_WIDGET_TAB]("metadata");
+    this[MUTATION_MAP_SET_SELECTED_WIDGET_TAB](this.propertyNameMetadata);
   }
 
   private mounted(): void {

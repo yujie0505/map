@@ -2,7 +2,8 @@ import { Action, Module, Mutation, VuexModule } from "vuex-module-decorators";
 
 import { ACTION_MAP_ADD_GEOJSON } from "@/constants/actions";
 import {
-  DEFAULT_STYLE_FILL_COLOR_PROPERTY_NAME,
+  DEFAULT_PROPERTY_NAME_FILL_COLOR,
+  DEFAULT_PROPERTY_NAME_METADATA,
   DEFAULT_STYLE_FILL_OPACITY,
   DEFAULT_STYLE_STROKE_WEIGHT,
 } from "@/constants/map";
@@ -28,10 +29,14 @@ export default class MapModule extends VuexModule implements MapState {
 
     this.mapInstance.data.addGeoJson(payload);
     this.mapInstance.data.setStyle((it) => ({
-      fillColor: it.getProperty(DEFAULT_STYLE_FILL_COLOR_PROPERTY_NAME),
+      fillColor: it.getProperty(DEFAULT_PROPERTY_NAME_FILL_COLOR),
       fillOpacity: DEFAULT_STYLE_FILL_OPACITY,
       strokeWeight: DEFAULT_STYLE_STROKE_WEIGHT,
     }));
+    this.mapInstance.data.addListener("click", (it) => {
+      this.context.commit(MUTATION_MAP_SET_SELECTED_GRID, it.feature.getProperty(DEFAULT_PROPERTY_NAME_METADATA));
+      this.context.commit(MUTATION_MAP_SET_SELECTED_WIDGET_TAB, DEFAULT_PROPERTY_NAME_METADATA);
+    });
   }
 
   @Mutation
