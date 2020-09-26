@@ -15,9 +15,9 @@ v-container.fill-height.pa-0(fluid)
       v-tab-item(value="source")
         v-card.mr-1.-scroll(:height="tabItemHeight", flat)
           v-subheader Upload GeoJSON
-          v-file-input.mx-3(dense, filled, hide-details, outlined, placeholder="File input")
+          v-file-input.mx-3(v-model="geojson", dense, filled, hide-details, outlined, placeholder="File input")
             template(#append-outer)
-              v-btn.ml-2
+              v-btn.ml-2(@click.stop.prevent="upload")
                 v-icon mdi-cloud-upload
       v-tab-item(value="metadata")
         v-card(flat, ref="card")
@@ -64,6 +64,7 @@ import { NUMBER_OF_DIGITS_TO_FIXED } from "@/constants/format";
 import { MUTATION_MAP_SET_SELECTED_GRID, MUTATION_MAP_SET_SELECTED_WIDGET_TAB } from "@/constants/mutations";
 import { Grid } from "@/types/map";
 import { WidgetTab } from "@/types/widget";
+import { read } from "@/utils/fs";
 
 const MapModule = namespace("map");
 
@@ -86,6 +87,8 @@ export default class Home extends Vue {
   private tabHeight = 0;
   private tabItemHeight = 0;
   private windowHeight = window.innerHeight;
+
+  private geojson: File | null = null;
 
   private get gridLatitudeSpan(): string {
     return this.selectedGrid
@@ -120,6 +123,16 @@ export default class Home extends Vue {
 
   private fixNumber(num: number): string {
     return num.toFixed(NUMBER_OF_DIGITS_TO_FIXED);
+  }
+
+  private async upload(): Promise<void> {
+    if (!this.geojson) return;
+
+    try {
+      const data = await read(this.geojson);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   private created(): void {
