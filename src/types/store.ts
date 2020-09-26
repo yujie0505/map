@@ -5,6 +5,7 @@ export interface RootState {
 }
 
 export interface MapState {
+  mapInstance: google.maps.Map | null;
   selectedGrid: Grid | null;
   selectedWidgetTab: string | null;
 }

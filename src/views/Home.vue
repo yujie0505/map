@@ -58,7 +58,7 @@ v-container.fill-height.pa-0(fluid)
               v-list-item-content
                 v-list-item-title.text--accent-1(v-text="fixNumber(item.value)", :class="color(item.value)")
                 v-list-item-subtitle #[v-icon(small) mdi-map-marker] {{ fixNumber(item.latitude) }}°N, {{ fixNumber(item.longitude) }}°E
-  Map(@selectGrid="MUTATION_MAP_SET_SELECTED_GRID")
+  Map(@setMapInstance="MUTATION_MAP_SET_MAP_INSTANCE")
 </template>
 
 <script lang="ts">
@@ -68,8 +68,9 @@ import { namespace } from "vuex-class";
 
 import Map from "@/components/Map.vue";
 import WidgetDrawer from "@/components/WidgetDrawer.vue";
+import { ACTION_MAP_ADD_GEOJSON } from "@/constants/actions";
 import { NUMBER_OF_DIGITS_TO_FIXED } from "@/constants/format";
-import { MUTATION_MAP_SET_SELECTED_GRID, MUTATION_MAP_SET_SELECTED_WIDGET_TAB } from "@/constants/mutations";
+import { MUTATION_MAP_SET_MAP_INSTANCE, MUTATION_MAP_SET_SELECTED_WIDGET_TAB } from "@/constants/mutations";
 import { Grid } from "@/types/map";
 import { WidgetTab } from "@/types/widget";
 import { read } from "@/utils/fs";
@@ -85,7 +86,10 @@ const MapModule = namespace("map");
 export default class Home extends Vue {
   @MapModule.State("selectedGrid") readonly selectedGrid!: Grid | null;
   @MapModule.State("selectedWidgetTab") readonly selectedWidgetTab!: string | null;
-  @MapModule.Mutation(MUTATION_MAP_SET_SELECTED_GRID) [MUTATION_MAP_SET_SELECTED_GRID]!: (payload: Grid | null) => void;
+  @MapModule.Action(ACTION_MAP_ADD_GEOJSON) [ACTION_MAP_ADD_GEOJSON]!: (payload: object) => void;
+  @MapModule.Mutation(MUTATION_MAP_SET_MAP_INSTANCE) [MUTATION_MAP_SET_MAP_INSTANCE]!: (
+    payload: google.maps.Map | null,
+  ) => void;
   @MapModule.Mutation(MUTATION_MAP_SET_SELECTED_WIDGET_TAB) [MUTATION_MAP_SET_SELECTED_WIDGET_TAB]!: (
     payload: string | null,
   ) => void;
@@ -140,6 +144,10 @@ export default class Home extends Vue {
     this.loading = true;
     try {
       const data = await read(this.geojson);
+
+      if ("string" === typeof data) {
+        this[ACTION_MAP_ADD_GEOJSON](JSON.parse(data));
+      }
     } catch (err) {
       console.error(err);
     } finally {
