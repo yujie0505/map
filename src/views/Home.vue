@@ -15,9 +15,17 @@ v-container.fill-height.pa-0(fluid)
       v-tab-item(value="source")
         v-card.mr-1.-scroll(:height="tabItemHeight", flat)
           v-subheader Upload GeoJSON
-          v-file-input.mx-3(v-model="geojson", dense, filled, hide-details, outlined, placeholder="File input")
+          v-file-input.mx-3(
+            v-model="geojson",
+            :loading="loading",
+            dense,
+            filled,
+            hide-details,
+            outlined,
+            placeholder="File input"
+          )
             template(#append-outer)
-              v-btn.ml-2(@click.stop.prevent="upload")
+              v-btn.ml-2(:disabled="!geojson", :loading="loading", @click.stop.prevent="upload")
                 v-icon mdi-cloud-upload
       v-tab-item(value="metadata")
         v-card(flat, ref="card")
@@ -89,6 +97,7 @@ export default class Home extends Vue {
   private windowHeight = window.innerHeight;
 
   private geojson: File | null = null;
+  private loading = false;
 
   private get gridLatitudeSpan(): string {
     return this.selectedGrid
@@ -128,10 +137,14 @@ export default class Home extends Vue {
   private async upload(): Promise<void> {
     if (!this.geojson) return;
 
+    this.loading = true;
     try {
       const data = await read(this.geojson);
     } catch (err) {
       console.error(err);
+    } finally {
+      this.geojson = null;
+      this.loading = false;
     }
   }
 
