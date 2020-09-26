@@ -14,7 +14,7 @@ v-container.fill-height.pa-0(fluid)
     template(#tab-items)
       v-tab-item(value="source")
       v-tab-item(value="metadata")
-        v-card(ref="card")
+        v-card(flat, ref="card")
           v-subheader General
           v-list(subheader, two-line)
             v-list-item(ref="listItem")
@@ -34,7 +34,16 @@ v-container.fill-height.pa-0(fluid)
                 v-list-item-subtitle the span of longitude of this grid
           v-divider
           v-subheader Targets
-        v-virtual-scroll(:height="scrollViewportHeight", :item-height="listItemHeight")
+        v-virtual-scroll(
+          :height="scrollViewportHeight",
+          :item-height="listItemHeight",
+          :items="selectedGrid ? selectedGrid.items : []"
+        )
+          template(v-slot="{ item }")
+            v-list-item
+              v-list-item-content
+                v-list-item-title.text--accent-1(v-text="fixNumber(item.value)", :class="color(item.value)")
+                v-list-item-subtitle #[v-icon(small) mdi-map-marker] {{ fixNumber(item.latitude) }}°N, {{ fixNumber(item.longitude) }}°E
   Map(@selectGrid="MUTATION_MAP_SET_SELECTED_GRID")
 </template>
 
@@ -100,6 +109,10 @@ export default class Home extends Vue {
 
   private color(value: number): string {
     return `${0 < value ? "red" : "indigo"}--text`;
+  }
+
+  private fixNumber(num: number): string {
+    return num.toFixed(NUMBER_OF_DIGITS_TO_FIXED);
   }
 
   private created(): void {
