@@ -25,7 +25,7 @@ v-container.fill-height.pa-0(fluid)
             placeholder="File input"
           )
             template(#append-outer)
-              v-btn.ml-2(:disabled="!geojson", :loading="loading", @click.stop.prevent="upload")
+              v-btn.ml-2(height="100%", :disabled="!geojson", :loading="loading", @click.stop.prevent="upload")
                 v-icon mdi-cloud-upload
       v-tab-item(:value="propertyNameMetadata")
         v-card(flat, ref="card")
