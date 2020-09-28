@@ -4,11 +4,11 @@
 
 1. [Get a Google Maps JavaScript API Key](https://developers.google.com/maps/documentation/javascript/get-api-key)
 
-2. Create a file named `config.json` in `[path to this repo]/src/assets`, and fill in the API Key received from step 1.
+2. Create a file named `config.json` in `[path to this repo]/src/assets`, and fill in the API Key received from Step 1.
 
 ```json
 {
-  "google_map_api_key": [Google Maps JavaScript API Key]
+  "google_map_api_key": "[Google Maps JavaScript API Key]"
 }
 ```
 
