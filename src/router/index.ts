@@ -1,14 +1,20 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import Home from "@/views/grid/Index.vue";
+
+import { ROUTE_NAME_CIRCLE, ROUTE_NAME_GRID } from "@/constants/routes";
+import Grid from "@/views/grid/Index.vue";
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: "/",
-    name: "Home",
-    component: Home,
+    path: "/grid",
+    name: ROUTE_NAME_GRID,
+    component: Grid,
+  },
+  {
+    path: "*",
+    redirect: { name: ROUTE_NAME_GRID },
   },
 ];
 

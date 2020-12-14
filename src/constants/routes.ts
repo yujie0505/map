@@ -1,0 +1,2 @@
+export const ROUTE_NAME_CIRCLE = "ROUTE_NAME_CIRCLE";
+export const ROUTE_NAME_GRID = "ROUTE_NAME_GRID";
