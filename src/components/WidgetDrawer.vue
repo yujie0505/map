@@ -1,5 +1,5 @@
 <template lang="pug">
-v-navigation-drawer(v-bind="options")
+v-navigation-drawer(v-bind="options", permanent)
   v-tabs(:value="selectedWidgetTab", grow)
     slot(name="tabs")
   v-tabs-items(:dark="dark", :value="selectedWidgetTab")
