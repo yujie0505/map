@@ -84,7 +84,7 @@ const MapModule = namespace("map");
     WidgetDrawer,
   },
 })
-export default class Home extends Vue {
+export default class Index extends Vue {
   @MapModule.State("selectedGrid") readonly selectedGrid!: Grid | null;
   @MapModule.State("selectedWidgetTab") readonly selectedWidgetTab!: string | null;
   @MapModule.Action(ACTION_MAP_ADD_GEOJSON) [ACTION_MAP_ADD_GEOJSON]!: (payload: object) => void;
